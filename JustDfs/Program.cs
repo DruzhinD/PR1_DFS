@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Data;
 
 namespace JustDfs
 {
@@ -15,9 +17,10 @@ namespace JustDfs
                 { 0, 1, 1, 0, 0, 0, 0 }, //3
                 { 0, 0, 1, 0, 0, 1, 1 }, //4
                 { 0, 0, 0, 0, 1, 0, 1 }, //5
-                { 0, 0, 0, 0, 1, 0, 1 }, //6
-                { 0, 0, 0, 0, 1, 1, 0 }, //7
+                { 0, 0, 0, 0, 1, 1, 0 }, //6
             };
+            string res = DfsString(matrix, 4);
+            Console.WriteLine(res);
         }
 
         /// <param name="matrix">матрица смежности</param>
@@ -27,24 +30,46 @@ namespace JustDfs
             //условие: неважно какое именно измерение, вершина будет та же т.е. [1,0] == [0,1]
             Stack<int> stack = new Stack<int>();
             string result = "";
+            int curInd = vertInd; //текущий индекс
 
-            stack.Push(vertInd);
-
-            //тупик
-            for (int i = 0; i < matrix.GetLength(0); i++)
+            stack.Push(curInd);
+            result += curInd;
+            do
             {
-                for (int j = 0; j < matrix.GetLength(1); j++)
+                //флаг, указывающий на наличие соседей, где false - их нет, true - сосед найден
+                bool neighbourFlag = false;
+
+                //при vertInd = 4 зацикливается на 4210 - 421 - 42 - 421 - 4210
+                for (int i = 0; i < matrix.GetLength(1); i++)
                 {
+                    //если в матрице смежности указана единица, т.е. есть ребро И
+                    
+                    if (matrix[curInd, i] == 1 && !stack.Contains(i))
+                    {
+                        neighbourFlag = true;
+                        stack.Push(i);
+                        curInd = i; //была проблема с этим, переменная оставалась == 0
 
+                        //если этой вершины нет в конечном списке вершин, то добавляем её туда
+                        if (!result.Contains(i.ToString())) //проблема в этом условии
+                            result += i;
+                        break;
+                    }
                 }
-            }
 
-            while (result.Length !=  matrix.GetLength(0) || stack.Count != 0)
-            {
-                
-            }
+                //если соседи не найдены, то достаем текущую вершину из стека
+                if (!neighbourFlag)
+                {
+                    stack.Pop();
+                    //теперь благодаря этому эта тварь зацикливается не на 2, а на 1
+                    curInd = stack.Pop();
+                    stack.Push(curInd);
+                }
 
-            return "";
+
+            }while(stack.Count > 0);
+
+            return result;
         }
     }
 }
