@@ -19,7 +19,7 @@ namespace JustDfs
                 { 0, 0, 0, 0, 1, 0, 1 }, //5
                 { 0, 0, 0, 0, 1, 1, 0 }, //6
             };
-            string res = DfsString(matrix, 4);
+            string res = DfsString(matrix, 6);
             Console.WriteLine(res);
         }
 
@@ -44,15 +44,14 @@ namespace JustDfs
                 {
                     //если в матрице смежности указана единица, т.е. есть ребро И
                     
-                    if (matrix[curInd, i] == 1 && !stack.Contains(i))
+                    if (matrix[curInd, i] == 1 && !stack.Contains(i) && !result.Contains(i.ToString()))
                     {
                         neighbourFlag = true;
                         stack.Push(i);
                         curInd = i; //была проблема с этим, переменная оставалась == 0
 
                         //если этой вершины нет в конечном списке вершин, то добавляем её туда
-                        if (!result.Contains(i.ToString())) //проблема в этом условии
-                            result += i;
+                        result += i;
                         break;
                     }
                 }
@@ -61,9 +60,12 @@ namespace JustDfs
                 if (!neighbourFlag)
                 {
                     stack.Pop();
-                    //теперь благодаря этому эта тварь зацикливается не на 2, а на 1
-                    curInd = stack.Pop();
-                    stack.Push(curInd);
+                    
+                    if (stack.Count > 0)
+                    {
+                        curInd = stack.Pop();
+                        stack.Push(curInd);
+                    }
                 }
 
 
