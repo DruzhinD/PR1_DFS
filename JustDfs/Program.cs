@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data;
 
 namespace JustDfs
 {
@@ -19,7 +18,7 @@ namespace JustDfs
                 { 0, 0, 0, 0, 1, 0, 1 }, //5
                 { 0, 0, 0, 0, 1, 1, 0 }, //6
             };
-            string res = DfsString(matrix, 4);
+            string res = DfsString(matrix, 2);
             Console.WriteLine(res);
         }
 
@@ -32,27 +31,25 @@ namespace JustDfs
             string result = "";
             int curInd = vertInd; //текущий индекс
 
-            //stack.Push(curInd);
-            //result += curInd;
+            int counter = 0;
             do
             {
+                counter++;
                 //флаг, указывающий на наличие соседей, где false - их нет, true - сосед найден
                 bool neighbourFlag = false;
 
-                //при vertInd = 4 зацикливается на 4210 - 421 - 42 - 421 - 4210
                 for (int i = 0; i < matrix.GetLength(1); i++)
                 {
-                    //если в матрице смежности указана единица, т.е. есть ребро И
-                    //ЗАЦИКЛИВАЕТСЯ на 4211111111111111111111
+                    //если в матрице смежности указана единица, т.е. есть ребро
                     if (matrix[curInd, i] == 1 && !stack.Contains(i) && !result.Contains(i.ToString()))
                     {
-                        result += curInd;
+                        if (!result.Contains(curInd.ToString()))
+                            result += curInd;
                         stack.Push(curInd);
                         curInd = i;
                         neighbourFlag = true;
 
-                        //если этой вершины нет в конечном списке вершин, то добавляем её туда
-                        //result += i;
+                        Console.WriteLine($"{result} | {curInd} | итерация: {counter}");
                         break;
                     }
                 }
@@ -60,17 +57,11 @@ namespace JustDfs
                 //если соседи не найдены, то достаем текущую вершину из стека
                 if (!neighbourFlag)
                 {
+                    if (!result.Contains(curInd.ToString()))
+                        result += curInd;
                     curInd = stack.Pop();
-                    
-                    if (stack.Count > 100)
-                    {
-                        curInd = stack.Pop();
-                        stack.Push(curInd);
-                    }
                 }
-
-
-            }while(stack.Count > 0);
+            }while(stack.Count > 0 | result.Length != matrix.GetLength(1));
 
             return result;
         }
