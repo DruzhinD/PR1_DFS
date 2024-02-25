@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data;
 
 namespace JustDfs
 {
@@ -27,7 +26,6 @@ namespace JustDfs
         /// <param name="vertInd">индекс стартовой вершины</param>
         static string DfsString(int[,] matrix, int vertInd)
         {
-            //условие: неважно какое именно измерение, вершина будет та же т.е. [1,0] == [0,1]
             Stack<int> stack = new Stack<int>();
             string result = "";
             int curInd = vertInd; //текущий индекс
@@ -39,16 +37,13 @@ namespace JustDfs
                 //флаг, указывающий на наличие соседей, где false - их нет, true - сосед найден
                 bool neighbourFlag = false;
 
-                //при vertInd = 4 зацикливается на 4210 - 421 - 42 - 421 - 4210
                 for (int i = 0; i < matrix.GetLength(1); i++)
                 {
-                    //если в матрице смежности указана единица, т.е. есть ребро И
-                    
                     if (matrix[curInd, i] == 1 && !stack.Contains(i) && !result.Contains(i.ToString()))
                     {
                         neighbourFlag = true;
                         stack.Push(i);
-                        curInd = i; //была проблема с этим, переменная оставалась == 0
+                        curInd = i;
 
                         //если этой вершины нет в конечном списке вершин, то добавляем её туда
                         result += i;
@@ -67,8 +62,6 @@ namespace JustDfs
                         stack.Push(curInd);
                     }
                 }
-
-
             }while(stack.Count > 0);
 
             return result;
